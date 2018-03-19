@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Feb 08 19:09:11 2017
-
-@authors: Alex Kneisel and James Vince
-"""
-
 from queue_stack import Stack
 
 def is_number(s):
