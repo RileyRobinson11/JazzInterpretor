@@ -1,3 +1,4 @@
+
 class StackObject:
     stack    = []
 
@@ -23,28 +24,32 @@ class cppMain:
     main = []
     
     def __init__(self):                         #Initializes the C++ main file.
-        main.append(r'#include "stdafx.h"')
-        main.append("#include <stack>")
-        main.append("#include <iostream>")
-        main.append("using namespace std;")
-        main.append("stack <int> S;")
-        main.append("int StackReturn() {")
-        main.append("int x = S.top();")
-        main.append("S.pop();")
-        main.append("return x;")
-        main.append("}")
-        main.append("int main(){")
+        self.main.append(r'#include "stdafx.h"')
+        self.main.append("#include <stack>")
+        self.main.append("#include <iostream>")
+        self.main.append("using namespace std;")
+        self.main.append("stack <int> S;")
+        self.main.append("int s1 = 0;")
+        self.main.append("int s2 = 0;")
+        self.main.append("int StackReturn() {")
+        self.main.append("int x = S.top();")
+        self.main.append("S.pop();")
+        self.main.append("return x;")
+        self.main.append("}")
+        self.main.append("int main(){")
 
     def addToMain(self, code):
-        main.append(code)
+        self.main.append(code)
 
-
-
-
-
-
-
+    def saveFile(self):
+        cppFile = open('JazCPP.cpp','w')
         
+        for x in range(0, len(self.main)):
+            cppFile.write(self.main[x]+"\n")
+        
+            cppFile.close
+
+
 
 def is_number(s):
     try:
@@ -57,12 +62,14 @@ def is_number(s):
 def subprogramModule(xValue, label, variables): #We need to investigate this.
     
     if xValue[0] in stackManipulationArray:
-        if is_number(xValue[1]):
-             stackManipulationModule(xValue[0], xValue[1])
+        if (xValue[0] == ":="):
+             stackManipulationModule(xValue[0], None)
         else:
-            functionVar = variables[xValue[1]]
-            stackManipulationModule(xValue[0], functionVar)
-       
+             variables[xValue[1]] = [xValue[1]]
+            # functionVar = variables[xValue[1]]
+             stackManipulationModule(xValue[0], xValue[1])
+        
+
     elif xValue[0] in arithArray:
         arithModule(xValue[0])
     elif xValue[0] in logicArray:
@@ -74,6 +81,11 @@ def subprogramModule(xValue, label, variables): #We need to investigate this.
 
 def stackManipulationModule(operator, opInput):
     input = opInput
+    input = opInput
+    code = ""
+    varValue    =   ""
+    varName     =   0
+
     if operator == "push":
         input = "S.push("+ input + ");"
         cpp.addToMain(input)
@@ -85,18 +97,25 @@ def stackManipulationModule(operator, opInput):
     elif operator == "rvalue":                  #I am not sure what this does.
         if opInput == "":
             S.push(0)
+            cpp.addToMain("S.push(0);")
         else:
             S.push(varStore[opInput])
+            code = "S.push(" + varStore[opInput] + ");"
+            cpp.addToMain(code)
             
     elif operator == "lvalue":                  #I am not sure what this does.
-        S.push(opInput)
+            S.push(opInput)
         
     elif operator == "pop":
         cpp.addToMain("S.pop();")
         S.destroyTop()
         
     elif operator == ":=":                      #I am not sure what this does.
-        varStore[S.top()] = S.top()
+        varValue    =   S.top();
+        varName     =   S.top();
+        varStore[varName ] = varValue
+        code = "int " + varName + " = " + str(varValue) +";"
+        cpp.addToMain(code)
         
     elif operator == "copy":
         cpp.addToMain("S.push(S.top());")
@@ -104,63 +123,85 @@ def stackManipulationModule(operator, opInput):
 
 def arithModule(operator):
     if operator == "+":
-        cpp.addToMain("S.push(StackReturn() + StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 + s2);")
         S.push(S.secondFromTop() + S.top())
         
     elif operator == "-":
-        cpp.addToMain("S.push(StackReturn() - StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 - s2);")
         S.push(S.secondFromTop() - S.top())
         
     elif operator == "*":
-        cpp.addToMain("S.push(StackReturn() * StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 * s2);")
         S.push(S.secondFromTop() * S.top())
         
     elif operator == "/":
-        cpp.addToMain("S.push(StackReturn() / StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 / s2);")
         S.push(S.secondFromTop() // S.top())
         
     elif operator == "div":
-        cpp.addToMain("S.push(StackReturn() % StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 % s2);")
         S.push(S.secondFromTop() % S.top())
         
 def relationModule(operator):
     if operator == "<>":
-        cpp.addToMain("S.push(StackReturn() == StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 != s2);")
         if S.secondFromTop() == S.top():
             S.push(0)
         else:
             S.push(1)
             
     elif operator == "<=":
-        cpp.addToMain("S.push(StackReturn() <= StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 <= s2);")
         if S.secondFromTop() <= S.top():
             S.push(1)
         else:
             S.push(0)
             
     elif operator == ">=":
-        cpp.addToMain("S.push(StackReturn() >= StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 >= s2);")
         if S.secondFromTop() >= S.top():
             S.push(1)
         else:
             S.push(0)
             
     elif operator == "<":
-        cpp.addToMain("S.push(StackReturn() < StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 < s2);")
         if S.secondFromTop() < S.top():
             S.push(1)
         else:
             S.push(0)
             
     elif operator == ">":
-        cpp.addToMain("S.push(StackReturn() > StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 > s2);")
         if S.secondFromTop() > S.top():
             S.push(1)
         else:
             S.push(0)
             
     elif operator == "=":
-        cpp.addToMain("S.push(StackReturn() == StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 == s2);")
         if S.secondFromTop() == S.top():
             S.push(1)
         else:
@@ -169,14 +210,18 @@ def relationModule(operator):
 def logicModule(operator):
     if operator == "&":
         S.push(S.top() and S.top())
-        cpp.addToMain("S.push(StackReturn() & StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 & s2);")
         
     elif operator == "!":
         S.push(int(not S.top()))
-        cpp.addToMain("S.push(~StackReturn());")
+        cpp.addToMain("S.push(!StackReturn());")
     elif operator == "|":
         S.push(S.top() or S.top())
-        cpp.addToMain("S.push(StackReturn() | StackReturn());")
+        cpp.addToMain("s2 = StackReturn();")
+        cpp.addToMain("s1 = StackReturn();")
+        cpp.addToMain("S.push(s1 | s2);")
         
 def outputModule(operator, opInput):
     code = ""
@@ -187,10 +232,14 @@ def outputModule(operator, opInput):
     elif operator == "show":
         if opInput == "":
             print("")
-            cpp.addToMain("cout << "" << endl;")
+            #cpp.addToMain('cout << "" << endl;')
         else:
             print(opInput)
-            code = 'cout <<"' + opInput + '"<< endl;'
+            mopInput = opInput
+            
+            mopInput = mopInput.replace('"','')
+            
+            code = ('cout <<' + '"' + mopInput + '"' + ' << endl;')
             cpp.addToMain(code)
             
 
@@ -211,6 +260,7 @@ splitLines = [x.split(' ', 1) for x in content]         #This splits each line a
 
 S           = StackObject()                             #Makes a stack called S
 cpp         = cppMain()
+variables   = {}
 varStore    = {}                                        #Makes a key-value pair data structure (dictionary) called varStore
 labelIndex  = {}
 
@@ -221,11 +271,11 @@ outputArray   = ["print", "show"]
 stackManipulationArray = ["push", "rvalue", "lvalue", "pop", ":=", "copy"]
 subProgramArray = ["begin", "end", "return", "call"]
 
-for count in range(len(splitLines)):
-    if splitLines[count][0] == "label":
-        labelIndex[splitLines[count][1]] = count
-    print(splitLines[count])                            #THIS IS FOR DEBUGGING
-    count = count + 1
+#for count in range(len(splitLines)):
+ #   if splitLines[count][0] == "label":
+  #      labelIndex[splitLines[count][1]] = count
+   # print(splitLines[count])                            #THIS IS FOR DEBUGGING
+    #count = count + 1
     
 num = 0
 mostRecentCall = []
@@ -246,8 +296,8 @@ while num < max(range(len(splitLines))) + 1:
         pass
             
     elif splitLines[num][0] == "goto":
-        num = labelIndex[splitLines[num][1]]
-            
+       # num = labelIndex[splitLines[num][1]]
+         pass    
     elif splitLines[num][0] == "gofalse":
         if S.top() == 0:
             num = labelIndex[splitLines[num][1]] 
@@ -257,6 +307,7 @@ while num < max(range(len(splitLines))) + 1:
             num = labelIndex[splitLines[num][1]]
             
     elif splitLines[num][0] == "halt":
+        cpp.addToMain('system("pause");')
         cpp.addToMain("return 0;")
         cpp.addToMain("}")
         break
@@ -286,8 +337,8 @@ while num < max(range(len(splitLines))) + 1:
                 
     ####SUBPROGRAM CONTROL####            
     elif splitLines[num][0] in subProgramArray:
-        while(splitLines[num][0] != "return"):
-            subprogramModule(splitLines[num], labelIndex, varStore)
+        while(splitLines[num][0] != "end"):
+            subprogramModule(splitLines[num], labelIndex, variables)
             num = num + 1
         #return
     
@@ -309,7 +360,12 @@ while num < max(range(len(splitLines))) + 1:
         
     num = num + 1
 
+
+for x in range(0, len(cpp.main)):
+    print(cpp.main[x])
+
+cpp.saveFile()
+
 print(labelIndex) #Will not be part of final code. Debugging purposes only.
 print(varStore)   #Will not be part of final code. Debugging purposes only.
 print(S)          #Will not be part of final code. Debugging purposes only.
-
