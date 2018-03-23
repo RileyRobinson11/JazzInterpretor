@@ -236,21 +236,21 @@ with open("operatorsTest.jaz") as f:                                            
 jazzfile    = [x.strip() for x in jazzfile]               
 splitLines = [x.split(' ', 1) for x in jazzfile]        
 
-S           = StackObject()                                                             #########INITIALIZE DATA STRUCUTRES
-cpp         = cppMain()
-variables   = {}
-varStore    = {}                                        
-labelIndex  = {}
-
-arithArray    = ["+", "-", "/", "div", "*"]
+arithArray    = ["+", "-", "/", "div", "*"]                                             #######CREATE ARRAYS 
 relationArray = ["<>", "<=", ">=", "<", ">", "="]
 logicArray    = ["&", "!", "|"]
 outputArray   = ["print", "show"]
 stackManipulationArray = ["push", "rvalue", "lvalue", "pop", ":=", "copy"]
 subProgramArray = ["begin", "end", "return", "call"]
 
+S           = StackObject()                                                             #########INITIALIZE DATA STRUCUTRES
+cpp         = cppMain()
+variables   = {}
+varStore    = {}                                        
+labelIndex  = {}
+
 num = 0
-mostRecentCall = []
+lastCall = []
     
 while num < max(range(len(splitLines))) + 1:
           
@@ -262,7 +262,7 @@ while num < max(range(len(splitLines))) + 1:
                        
     elif splitLines[num][0] == "label":                                                 #####CONTROL FLOW 
         cpp.addToMain("LABEL " + splitLines[num][1])
-        mostRecentCall = splitLines[num][1]
+        lastCall = splitLines[num][1]
             
     elif splitLines[num][0] == "goto":
          cpp.addToMain("goto " + splitLines[num][1])    
