@@ -1,3 +1,14 @@
+#README
+#Name: Daniel McGinnis, Riley Robinson
+#Class: EECS3550:001 Software Engineering
+#Project: Programming Assignment 1 Jaz to C++ Translator
+#03/22/2018
+#Description: This program takes programs written in the Jaz
+# machine instruction set as input and converts them to the equivalent
+# C++ code.
+#Status: The program is not 100% functional. Please review the accompanying
+# documentation for a complete explanation.
+
 class StackObject:
     stack    = []
 
