@@ -302,8 +302,7 @@ while num < max(range(len(jazzLines))) + 1:
     elif jazzLines[num][0] == "halt":
         cpp.addToMain('system("pause");')
         cpp.addToMain("return 0;")
-        cpp.addToMain("}")
-        break                                          
+        cpp.addToMain("}")                                          
         
     elif jazzLines[num][0] in arithArray:                                              ####ARITHMETIC ARRAY
         arith(jazzLines[num][0])
