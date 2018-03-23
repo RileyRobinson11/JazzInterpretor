@@ -1,28 +1,28 @@
 class StackObject:
     stack    = []
 
-    def top(self):                              #Returns the value on top of the stack and then removes it.
+    def top(self):                                           #####Returns the value on top of the stack and then removes it.
         value = 0
         value = self.stack[-1]
         self.stack = self.stack[:-1]
         return value      
     
-    def secondFromTop(self):                    #Returns the value second from the top
+    def secondFromTop(self):                                 #####Returns the value second from the top
         return self.stack[-2]
    
-    def push(self, value):                      #Adds a value to the top of the stack.
+    def push(self, value):                                   #####Adds a value to the top of the stack.
         self.stack.append(value)
     
-    def destroyTop(self):                       #Removes value from top of stack returns and nothing.
+    def destroyTop(self):                                    #####Removes value from top of stack returns and nothing.
         self.stack = self.stack[:-1]
     
-    def look(self):                             #Returns the value on top of the stack.
+    def look(self):                                          #####Returns the value on top of the stack.
         return self.stack[-1]
     
 class cppMain:
     main = []
     
-    def __init__(self):                         #Initializes the C++ main file.
+    def __init__(self):                                      #####Initializes the C++ main file.
         self.main.append(r'#include "stdafx.h"')
         self.main.append("#include <stack>")
         self.main.append("#include <iostream>")
