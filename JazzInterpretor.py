@@ -241,11 +241,11 @@ def outputModule(operator, opInput):
             code = ('cout <<' + '"' + mopInput + '"' + ' << endl;')
             cpp.addToMain(code)
             
-with open("operatorsTest.jaz") as f:                                                    ########READS FILE LINE BY LINE
-    jazzfile = f.readlines()                                                            #########SPLITS ELEMENTS AND PLACES THEM INTO ARRAY CALLED JAZZ FILE
+JAZfile = open(input("Enter Filename: "),'r')
+jazInput = JAZfile.readlines()                                                          #########SPLITS ELEMENTS AND PLACES THEM INTO ARRAY CALLED JAZZ FILE
 
-jazzfile    = [x.strip() for x in jazzfile]               
-splitLines = [x.split(' ', 1) for x in jazzfile]        
+jazInput   = [x.strip() for x in jazInput]               
+splitLines = [x.split(' ', 1) for x in jazInput]        
 
 arithArray    = ["+", "-", "/", "div", "*"]                                             #######CREATE ARRAYS 
 relationArray = ["<>", "<=", ">=", "<", ">", "="]
